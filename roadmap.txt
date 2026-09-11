@@ -1,0 +1,18 @@
+Berikut adalah roadmap langkah demi langkahnya:
+
+Tahap 1: 
+Persiapan Data & Fondasi UI (Minggu 1 - 2)
+Fokus: Menyiapkan bahan baku dan tampilan agar hasil kodemu bisa langsung dites.Siapkan Dataset: Pastikan file pesanan.csv (berisi 200.000 baris data) dan peta.csv sudah diunduh dan dimasukkan ke dalam folder data/.  
+Bangun Pembaca Data (I/O): Buat fungsi sederhana di Python untuk membaca CSV tersebut agar bisa diakses oleh backend. (Sesuai aturan, operasi I/O standar diperbolehkan).  
+Rancang Antarmuka (Tkinter): Buka frontend/ui.py dan buat layout tiga bagian:Panel kiri: Daftar tombol menu navigasi.  Panel kanan: Form parameter dan area teks untuk melihat hasil.  Panel bawah: Area command untuk mencatat waktu eksekusi (ms) dan perintah yang berjalan.  
+Sambungkan App: Pastikan app.py bisa memanggil dan menampilkan jendela Tkinter tersebut.
+
+Tahap 2: M1 (Array vs Linked List) (Minggu 2 - 4)Fokus: Menyelesaikan file backend/m1_pesanan.py.  Logika Array Dinamis: Buat class Array yang menggunakan list Python sebagai array primitif. Atur logikanya agar saat petak penuh, kapasitasnya digandakan (2x) dan isinya disalin (amortized $O(1)$).  Logika Linked List: Buat class Node dan class LinkedList dengan pointer head dan tail agar penambahan data di belakang tetap $O(1)$.  Fitur CRUD Pesanan: Implementasikan metode untuk Lihat, Tambah (Reguler di belakang, Prioritas di tengah, VIP di depan), dan Hapus.  Integrasi UI: Hubungkan tombol M1 di Tkinter ke backend ini dan uji coba waktunya.
+
+Tahap 3: M2 & M3 (Menuju Live Demo ETS) (Minggu 4 - 9)Fokus: Antrean, fitur Undo, dan pengurutan (Sorting).M2 - Antrean & Stack: Kerjakan backend/m2_antrean.py. Buat struktur data Queue (antrean masuk pesanan secara FIFO) dan Stack (tumpukan LIFO untuk fitur undo / membatalkan perintah terakhir).  M3 - Sorting Laporan: Kerjakan backend/m3_laporan.py. Implementasikan algoritma pengurutan manual (misalnya Merge Sort atau Insertion Sort) untuk menyusun laporan terurut.  Persiapan Live Demo 1 (LD1): Rapikan kode M1, M2, dan M3. LD1 akan dilaksanakan pada Minggu ke-9 (masa ETS).  
+
+Tahap 4: M4 & M5 (Pencarian, Hash, & Katalog) (Minggu 9 - 15)Fokus: Pencarian data cepat dan manajemen antrean prioritas.M4 - Search & Hash: Di backend/m4_pencarian.py. Bangun pencarian Binary Search dan buat Hash Map mandiri (membuat fungsi hash teks dan menangani tabrakan/kolisinya) karena penggunaan dict dilarang.  M5 - BST & MinHeap: Di backend/m5_katalog.py. Buat struktur Binary Search Tree (BST) untuk memfilter menu berdasarkan rentang harga. Kemudian buat MinHeap untuk mengatur prioritas dispatch kurir.  
+
+Tahap 5: M6 (Peta Navigasi) (Minggu 14 - 17)Fokus: Algoritma Graph untuk rute pengiriman.M6 - Peta & Rute: Buka backend/m6_peta.py. Ubah data dari peta.csv menjadi struktur Graph (bisa menggunakan Adjacency List yang dibangun dari Linked List buatanmu).  Algoritma Navigasi: Implementasikan algoritma Breadth-First Search (BFS) atau Dijkstra untuk mencari rute antar pesanan.  
+
+Tahap 6: Finalisasi & Pengumpulan (Minggu 17)Fokus: Demo akhir dan kelengkapan repositori.Uji Skala: Tes seluruh tombol di UI dengan beban 200.000 data dan pastikan tidak ada error memori.Dokumentasi README.md: Tulis deskripsi proyek, cara menjalankan app.py, lampirkan tangkapan layar UI, dan rekam video demo singkat.  Submit: Unggah repositori GitHub ini melalui CEITS/ENIGMA.  Live Demo Final (LD2): Persiapkan dirimu untuk presentasi EAS di minggu ke-17.  
