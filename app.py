@@ -1,33 +1,31 @@
 import tkinter as tk
 from frontend.ui import AppUI
 from backend.m1_pesanan import Array, LinkList
-
-def baca_pesanan_csv():
-    data_pesanan = []
-    try:
-        with open('data/pesanan.csv', 'r') as file:
-            header = file.readline() 
-            for baris in file:
-                elemen = baris.strip().split(',')
-                data_pesanan.append(elemen)
-        return data_pesanan
-    except FileNotFoundError:
-        return []
+from backend.m2_antrean import QueueNaif, AntreanMelingkar, ManajerUndoRedo
 
 if __name__ == "__main__":
-    print("Memuat data pesanan...")
-    larik_data = baca_pesanan_csv()
-    
+    root = tk.Tk()
+
+    # Struktur Data M1: Array Dinamis & Singly Linked List
     pesanan_array = Array()
     pesanan_ll = LinkList()
-    
-    for baris in larik_data:
-        pesanan_array.append(baris)
-        pesanan_ll.append(baris)
-        
-    print("Berhasil memuat data ke Array dan Linked List!")
 
-    root = tk.Tk()
-    # Mengirim kedua objek ke UI
-    app = AppUI(root, pesanan_array, pesanan_ll)
+    # Struktur Data M2: Queue Naif, Antrean Melingkar, dan Manajer Undo/Redo
+    queue_naif = QueueNaif()
+    queue_circular = AntreanMelingkar()
+    manajer_undo = ManajerUndoRedo()
+
+    # Mengirim objek backend M1 & M2 ke Antarmuka Tkinter
+    app = AppUI(
+        root,
+        pesanan_array,
+        pesanan_ll,
+        queue_naif=queue_naif,
+        queue_circular=queue_circular,
+        manajer_undo=manajer_undo
+    )
+
+    # Otomatis memuat data pesanan CSV saat startup
+    app.aksi_load()
+
     root.mainloop()

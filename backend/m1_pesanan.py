@@ -35,10 +35,13 @@ class Array:
         
     def hapus(self, indeks):
         if 0 <= indeks < self.ukuran:
+            dihapus = self.data[indeks]
             for i in range(indeks, self.ukuran - 1):
                 self.data[i] = self.data[i + 1]
             self.data[self.ukuran - 1] = None
             self.ukuran -= 1
+            return dihapus
+        return None
 
 
 # --- LOGIKA LINKED LIST ---
