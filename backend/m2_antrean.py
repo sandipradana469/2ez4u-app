@@ -1,10 +1,7 @@
-# =====================================================================
-# MODUL M2: STACK & QUEUE (backend/m2_antrean.py)
-# Aturan: Tanpa dict, set, sorted, heapq, bisect, collections
-# =====================================================================
+#M2 antrean
 
 class Stack:
-    """Implementasi tumpukan (LIFO) menggunakan array primitif dinamis."""
+    #Implementasi tumpukan (LIFO) menggunakan array primitif dinamis.
     def __init__(self, kapasitas_awal=16):
         self.kapasitas = kapasitas_awal
         self.top = 0
@@ -53,11 +50,7 @@ class Stack:
             self.data[i] = None
         self.top = 0
 
-
-# =====================================================================
 # BAGIAN A (1): KASIR (INFIX -> POSTFIX -> EVALUASI)
-# =====================================================================
-
 def tokenisasi(ekspresi):
     """Memecah string ekspresi menjadi list token (angka, operator, kurung)."""
     tokens = []
@@ -169,11 +162,7 @@ def hitung(postfix):
     total = stack_val.pop()
     return total, langkah
 
-
-# =====================================================================
 # BAGIAN B: DUA VERSI QUEUE (NAIF VS MELINGKAR)
-# =====================================================================
-
 class QueueNaif:
     """Antrean berbasis array biasa. Dequeue memerlukan penggeseran elemen O(n)."""
     def __init__(self, kapasitas_awal=32):
@@ -231,10 +220,10 @@ class QueueNaif:
 
 
 class AntreanMelingkar:
-    """
-    Antrean melingkar (Circular Queue) berbasis array dengan penunjuk front, rear, dan count.
-    Operasi enqueue O(1) dan dequeue O(1) tanpa penggeseran elemen memori.
-    """
+    
+    #Antrean melingkar (Circular Queue) berbasis array dengan penunjuk front, rear, dan count.
+    #Operasi enqueue O(1) dan dequeue O(1) tanpa penggeseran elemen memori.
+
     def __init__(self, kapasitas_awal=32768):
         self.kapasitas = kapasitas_awal
         self.data = [None] * self.kapasitas
@@ -314,11 +303,7 @@ class AntreanMelingkar:
         self.count = 0
         self.data = [None] * self.kapasitas
 
-
-# =====================================================================
 # BAGIAN A (2): STACK UNDO & REDO
-# =====================================================================
-
 class ManajerUndoRedo:
     """
     Mengelola tumpukan undo dan redo.
