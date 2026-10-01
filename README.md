@@ -1,4 +1,4 @@
-# Proyek 2EZ4U APP - Delivery Service Engine
+# Proyek 2EZ4U APP 
 Studi Kasus Proyek Akhir Struktur Data & Analisa Algoritma (EC234303)  
 Departemen Teknik Komputer, FTEIC - ITS  
 Dosen Pengampu: Ir. Arta Kusuma Hernanda, S.T., M.T.
