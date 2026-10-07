@@ -15,7 +15,7 @@ Proyek 2EZ4U APP adalah aplikasi backend engine mini untuk layanan pesan antar m
 
 Aplikasi ini dibangun menggunakan arsitektur 3 layer:
 1. Data (data/): Berisi file `pesanan.csv` (200.000 baris) dan `peta.csv`.
-2. Backend (backend/): Berisi modul struktur data dan algoritma yang diimplementasikan secara manual dari awal.
+2. Backend (backend/): Saat ini berisi modul M1 sampai M3 yang diimplementasikan manual dari awal. Modul M4 sampai M6 dikerjakan pada jadwal milestone berikutnya.
 3. Frontend (frontend/): Satu jendela desktop sederhana menggunakan Tkinter untuk menjalankan perintah, melihat hasil, dan mencatat waktu eksekusi dalam milidetik (ms).
 
 ---
@@ -32,13 +32,12 @@ Aplikasi ini dibangun menggunakan arsitektur 3 layer:
 |-- backend/
 |   |-- m1_pesanan.py
 |   |-- m2_antrean.py
-|   |-- m3_laporan.py
-|   |-- m4_pencarian.py
-|   |-- m5_katalog.py
-|   `-- m6_peta.py
+|   `-- m3_laporan.py
 `-- frontend/
     `-- ui.py
 ```
+
+**Catatan status:** Repository ini sedang berada pada tahap pengerjaan sampai M3. File dan menu M4, M5, dan M6 belum ditambahkan agar sesuai jadwal milestone.
 
 ---
 
@@ -107,6 +106,32 @@ Hasil pengujian pada data 200.000 baris:
 
 ---
 
+### Milestone 3 (M3): Sorting dan Searching
+
+Pada M3, data pesanan dipakai untuk membuat laporan terurut dan pencarian OID. Empat algoritma utama sudah dihubungkan ke antarmuka Tkinter dan masing-masing menampilkan jumlah perbandingan.
+
+1. **Insertion Sort**
+   * Mengurutkan data secara stabil dengan cara menggeser elemen yang lebih besar ke kanan.
+   * Cocok untuk data kecil atau hampir terurut.
+   * Pada UI dibatasi maksimal 20.000 baris agar aplikasi tidak membeku.
+
+2. **Merge Sort**
+   * Menggunakan strategi divide and conquer.
+   * Stabil karena saat kunci sama, elemen dari bagian kiri didahulukan.
+   * Dapat dipakai untuk dataset penuh 200.000 baris.
+
+3. **Linear Search**
+   * Mencari target OID dari depan ke belakang.
+   * Tidak membutuhkan data terurut.
+   * Melaporkan indeks asli dan jumlah perbandingan.
+
+4. **Binary Search**
+   * Data diurutkan terlebih dahulu berdasarkan OID menggunakan Merge Sort.
+   * Setelah data terurut, pencarian dilakukan dengan membuang separuh ruang pencarian setiap langkah.
+   * UI menampilkan biaya pra-sort dan biaya pencarian secara terpisah.
+
+---
+
 ## 5. Kepatuhan Aturan Main
 Seluruh kode backend dibuat dengan mematuhi batasan tugas dari dosen:
 * Tidak menggunakan tipe data dan struktur bawaan: `dict`, `set`, dan literal `{}`.
@@ -114,3 +139,5 @@ Seluruh kode backend dibuat dengan mematuhi batasan tugas dari dosen:
 * Tidak menggunakan pustaka bawaan: `collections.*`, `heapq`, dan `bisect`.
 * List Python hanya digunakan sebagai array primitif berukuran tetap.
 * Operasi yang digunakan adalah tuple, manipulasi pointer simpul, aritmetika, dan file I/O standar.
+
+

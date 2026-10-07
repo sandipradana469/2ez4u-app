@@ -61,7 +61,7 @@ def tokenisasi(ekspresi):
         if c == ' ' or c == '\t':
             i += 1
             continue
-        elif c in '+-*/()':
+        elif c in '+-*/^()':
             tokens.append(c)
             i += 1
         elif c.isdigit():
@@ -75,6 +75,8 @@ def tokenisasi(ekspresi):
     return tokens
 
 def presedensi(op):
+    if op == '^':
+        return 3
     if op == '*' or op == '/':
         return 2
     if op == '+' or op == '-':
@@ -85,44 +87,63 @@ def ke_postfix(ekspresi):
     """
     Mengubah infix ke postfix memakai Stack operator.
     Mengembalikan (list_postfix, langkah_tabel).
+    Setiap baris langkah: (nomor, token, tindakan, stack, keluaran)
     """
     tokens = tokenisasi(ekspresi)
     stack_op = Stack()
     keluaran = []
     langkah = []
+    nomor = 0
 
     for t in tokens:
+        nomor += 1
+        st = lambda: " ".join([str(x) for x in stack_op.get_items()]) or "kosong"
+        out = lambda: " ".join(keluaran) or ""
+
         if t.isdigit():
             keluaran.append(t)
-            stack_str = " ".join([str(x) for x in stack_op.get_items()])
-            out_str = " ".join(keluaran)
-            langkah.append((t, "angka, langsung keluar", stack_str, out_str))
+            langkah.append((f"1.{nomor}", t, "operand, langsung ke output", st(), out()))
+
         elif t == '(':
             stack_op.push(t)
-            stack_str = " ".join([str(x) for x in stack_op.get_items()])
-            out_str = " ".join(keluaran)
-            langkah.append((t, "push (", stack_str, out_str))
+            langkah.append((f"1.{nomor}", t, "push ( ke stack", st(), out() or "kosong"))
+
         elif t == ')':
+            popped_kurung = []
             while not stack_op.is_empty() and stack_op.peek() != '(':
-                keluaran.append(stack_op.pop())
-            stack_op.pop() # Buang tanda '('
-            stack_str = " ".join([str(x) for x in stack_op.get_items()]) if not stack_op.is_empty() else "kosong"
-            out_str = " ".join(keluaran)
-            langkah.append((t, "pop sampai (, buang (", stack_str, out_str))
-        elif t in '+-*/':
+                p = stack_op.pop()
+                popped_kurung.append(p)
+                keluaran.append(p)
+            stack_op.pop()  # buang '('
+            isi_pop = " ".join(popped_kurung)
+            tindakan_kurung = f"pop sampai ( : {isi_pop}, lalu buang (" if isi_pop else "pop sampai (, buang ("
+            langkah.append((f"1.{nomor}", t, tindakan_kurung, st() or "kosong", out()))
+
+        elif t in '+-*/^':
+            popped = []
             while (not stack_op.is_empty() and stack_op.peek() != '(' and
                    presedensi(stack_op.peek()) >= presedensi(t)):
-                keluaran.append(stack_op.pop())
-            stack_op.push(t)
-            stack_str = " ".join([str(x) for x in stack_op.get_items()])
-            out_str = " ".join(keluaran)
-            langkah.append((t, f"push {t}", stack_str, out_str))
+                p = stack_op.pop()
+                popped.append(p)
+                keluaran.append(p)
 
+            stack_op.push(t)
+
+            if popped:
+                tindakan = f"pop {' '.join(popped)}, lalu push {t}"
+            else:
+                tindakan = f"push {t}"
+
+            langkah.append((f"1.{nomor}", t, tindakan, st(), out()))
+
+    sisa_op = []
     while not stack_op.is_empty():
-        keluaran.append(stack_op.pop())
-    
-    out_str = " ".join(keluaran)
-    langkah.append(("akhir", "pop sisa stack", "kosong", out_str))
+        p = stack_op.pop()
+        sisa_op.append(p)
+        keluaran.append(p)
+
+    ket_sisa = f"pop sisa stack: {' '.join(sisa_op)}" if sisa_op else "pop sisa stack"
+    langkah.append(("1.akhir", "-", ket_sisa, "kosong", " ".join(keluaran)))
 
     return keluaran, langkah
 
@@ -130,17 +151,19 @@ def hitung(postfix):
     """
     Mengevaluasi ekspresi postfix memakai Stack nilai.
     Mengembalikan (total_nilai, langkah_tabel).
-    Perhatian: Urutan pop b = pop() dulu, baru a = pop(), hitung a op b.
+    Setiap baris langkah: (nomor, token, tindakan, stack_str)
     """
     stack_val = Stack()
     langkah = []
+    nomor = 0
 
     for t in postfix:
+        nomor += 1
         if t.isdigit():
             stack_val.push(int(t))
             stack_str = " ".join([str(x) for x in stack_val.get_items()])
-            langkah.append((t, f"push {t}", stack_str))
-        elif t in '+-*/':
+            langkah.append((f"2.{nomor}", t, f"operand, push {t}", stack_str))
+        elif t in '+-*/^':
             b = stack_val.pop()
             a = stack_val.pop()
             if a is None or b is None:
@@ -154,10 +177,12 @@ def hitung(postfix):
                 hasil = a * b
             elif t == '/':
                 hasil = a // b if b != 0 else 0
+            elif t == '^':
+                hasil = a ** b
 
             stack_val.push(hasil)
             stack_str = " ".join([str(x) for x in stack_val.get_items()])
-            langkah.append((t, f"pop {b} dan {a} -> {a}{t}{b} = {hasil}", stack_str))
+            langkah.append((f"2.{nomor}", t, f"pop {b} dan {a} -> {a}{t}{b} = {hasil}", stack_str))
 
     total = stack_val.pop()
     return total, langkah
@@ -212,6 +237,17 @@ class QueueNaif:
 
         self.ukuran -= k_nyata
         return keluar, total_digeser
+
+    def kembalikan_ke_depan(self, daftar_pesanan):
+        k = len(daftar_pesanan)
+        while self.ukuran + k > self.kapasitas:
+            self._resize(2 * self.kapasitas)
+
+        for i in range(self.ukuran - 1, -1, -1):
+            self.data[i + k] = self.data[i]
+        for i in range(k):
+            self.data[i] = daftar_pesanan[i]
+        self.ukuran += k
 
     def clear(self):
         for i in range(self.ukuran):
@@ -341,9 +377,11 @@ class ManajerUndoRedo:
             pesan = f"{dihapus[0] if dihapus else 'Pesanan'} dikeluarkan lagi dari belakang antrean circular"
 
         elif jenis == 'DEQUEUE':
-            # Kebalikan dequeue: kembalikan seluruh pesanan ke DEPAN antrean circular
+            # Kebalikan dequeue: kembalikan seluruh pesanan ke DEPAN kedua antrean
             queue_circular.kembalikan_ke_depan(data)
-            pesan = f"{len(data)} pesanan dikembalikan ke DEPAN antrean circular"
+            if queue_naif:
+                queue_naif.kembalikan_ke_depan(data)
+            pesan = f"{len(data)} pesanan dikembalikan ke DEPAN kedua antrean"
 
         else:
             pesan = f"Aksi {jenis} dibatalkan"
@@ -371,10 +409,12 @@ class ManajerUndoRedo:
             pesan = f"{data[0]} masuk kembali ke belakang antrean circular"
 
         elif jenis == 'DEQUEUE':
-            # Kerjakan lagi dequeue aslinya
+            # Kerjakan lagi dequeue aslinya pada kedua antrean
             k = len(data)
             keluar, _ = queue_circular.dequeue(k)
-            pesan = f"{len(keluar)} pesanan keluar lagi dari antrean circular"
+            if queue_naif:
+                queue_naif.dequeue(k)
+            pesan = f"{len(keluar)} pesanan keluar lagi dari kedua antrean"
 
         else:
             pesan = f"Aksi {jenis} diulang"
@@ -385,3 +425,4 @@ class ManajerUndoRedo:
 
     def stats(self):
         return self.stack_undo.size(), self.stack_redo.size()
+

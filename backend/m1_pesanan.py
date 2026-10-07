@@ -21,6 +21,12 @@ class Array:
 
     def insert(self, indeks, v):
         # Tambah PRIORITAS/VIP - O(n) karena harus geser elemen
+        if indeks <= 0:
+            indeks = 0
+        elif indeks >= self.ukuran:
+            self.append(v)
+            return
+
         if self.ukuran == self.kapasitas:
             self._resize(2 * self.kapasitas)
         for i in range(self.ukuran, indeks, -1):
