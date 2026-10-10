@@ -30,11 +30,8 @@ class AppUI:
         self.root.title("2EZ4U Food Delivery")
         self.root.geometry("1100x680")
 
-        # ================================================================
-        # KONFIGURASI MENU DAN PARAMETER FORM (M1 s.d. M3)
-        # ================================================================
+        # menu
         self.menu_config = {
-            # --- DATA ---
             'DATA_LOAD': {
                 'judul': 'Data: Muat Pesanan dari CSV',
                 'subjudul': 'Membaca data/pesanan.csv ke dalam struktur data Array dan Linked List.',
@@ -46,8 +43,6 @@ class AppUI:
                 'modul': 'M1 - larik',
                 'aksi': 'DATA_LOAD'
             },
-
-            # --- M1: DATA PESANAN ---
             'ARRAY_LIHAT': {
                 'judul': 'Array: lihat pesanan ke-i',
                 'subjudul': 'get: buka detail satu pesanan pada indeks tertentu, O(1).',
@@ -174,8 +169,6 @@ class AppUI:
                 'struktur': 'LINKLIST',
                 'aksi': 'HAPUS'
             },
-
-            # --- M2: STACK DAN QUEUE ---
             'M2_STACK_POSTFIX': {
                 'judul': 'Stack: hitung struk lewat postfix',
                 'subjudul': 'Struk ditulis infix, lalu dihitung dua tahap dengan stack: tahap 1 infix menjadi postfix, tahap 2 postfix dievaluasi.',
@@ -242,8 +235,6 @@ class AppUI:
                 'modul': 'M2 - circular',
                 'aksi': 'M2_QUEUE_DEQUEUE_CIRCULAR'
             },
-
-            # --- M3: SORT DAN SEARCH ---
             'M3_INSERTION_SORT': {
                 'judul': 'Sort: Insertion Sort (Stabil, In-Place)',
                 'subjudul': 'Mengurutkan pesanan dengan membandingkan dan menggeser ke kiri, O(n^2). Maksimal 20.000 baris.',
@@ -293,15 +284,7 @@ class AppUI:
         self.menu_aktif = 'M2_STACK_POSTFIX'
         self.tombol_menu = {}
 
-        # ================================================================
-        # STRUKTUR LAYOUT:
-        #   root
-        #   |-- banner_atas (TOP)                 <- Header biru '2EZ4U Food Delivery'
-        #   |-- panel_kiri  (LEFT)                <- Canvas scrollable daftar menu
-        #   `-- frame_kanan (LEFT, fill=BOTH)     <- Parameter, Hasil, COMMAND, Catatan
-        # ================================================================
-
-        # --- BANNER ATAS (PERSIS MODUL) ---
+        # tampilan atas
         self.banner_atas = tk.Frame(root, bg="#1a365d", height=38)
         self.banner_atas.pack(side=tk.TOP, fill=tk.X)
         self.banner_atas.pack_propagate(False)
@@ -313,8 +296,7 @@ class AppUI:
             fg="white",
             font=("Arial", 11, "bold")
         ).pack(side=tk.LEFT, padx=12, pady=8)
-
-        # --- PANEL KIRI DENGAN SCROLLBAR ---
+        # menu kiri
         self.frame_kiri_kontainer = tk.Frame(root, bg="#e0e0e0", relief=tk.RIDGE, bd=1)
         self.frame_kiri_kontainer.pack(side=tk.LEFT, fill=tk.Y)
 
@@ -329,11 +311,7 @@ class AppUI:
 
         self.canvas_kiri.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         self.scrollbar_kiri.pack(side=tk.RIGHT, fill=tk.Y)
-
-        # Mousewheel scroll binding
         self.canvas_kiri.bind_all("<MouseWheel>", self._on_mousewheel)
-
-        # SUSUNAN SEKSI MENU DI PANEL KIRI
         seksi_menu = [
             ("DATA", [
                 ("DATA_LOAD", "Load")
@@ -365,8 +343,6 @@ class AppUI:
                 ("SEARCH_BINARY_SEARCH", "SEARCH - BINARY SEARCH"),
             ])
         ]
-
-        # Alias mapping untuk ID tombol yang sedikit beda nama di konfigurasi
         self.alias_id = {
             'QUEUE_ENQUEUE': 'M2_QUEUE_ENQUEUE',
             'QUEUE_DEQUEUE_NAIF': 'M2_QUEUE_DEQUEUE_NAIF',
@@ -396,8 +372,6 @@ class AppUI:
                 )
                 btn.pack(fill=tk.X, padx=5, pady=1)
                 self.tombol_menu[target_mid] = btn
-
-        # Indikator status di pojok kiri bawah (persis modul)
         self.btn_status = tk.Label(
             self.frame_kiri,
             text="[ siap ]",
@@ -409,12 +383,9 @@ class AppUI:
             relief=tk.FLAT
         )
         self.btn_status.pack(anchor="w", padx=6, pady=(15, 12))
-
-        # --- PANEL KANAN ---
+        # panel hasil
         self.frame_kanan = tk.Frame(root, bg="white")
         self.frame_kanan.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-
-        # Form Parameter Dinamis (TOP)
         self.frame_form = tk.Frame(self.frame_kanan, bg="white")
         self.frame_form.pack(fill=tk.X, padx=20, pady=(12, 4))
 
@@ -436,8 +407,6 @@ class AppUI:
             anchor="w"
         )
         self.lbl_subjudul.pack(fill=tk.X, pady=(2, 8))
-
-        # Baris Input Parameter
         self.frame_input_baris = tk.Frame(self.frame_form, bg="white")
         self.frame_input_baris.pack(fill=tk.X)
 
@@ -487,10 +456,7 @@ class AppUI:
         )
         self.lbl_hint.pack(anchor="w", pady=(2, 0))
 
-        # Garis pemisah horizontal
         tk.Frame(self.frame_kanan, height=1, bg="#e2e8f0").pack(fill=tk.X, padx=20, pady=(8, 6))
-
-        # CATATAN PENJELAS DI BAWAH (BOTTOM)
         self.frame_catatan = tk.Frame(self.frame_kanan, bg="#f8f9fa", relief=tk.SOLID, bd=1)
         self.frame_catatan.pack(side=tk.BOTTOM, fill=tk.X, padx=20, pady=(0, 8))
         self.lbl_catatan_bawah = tk.Label(
@@ -503,8 +469,6 @@ class AppUI:
             wraplength=760
         )
         self.lbl_catatan_bawah.pack(anchor="w", padx=8, pady=4)
-
-        # COMMAND LOG (Tepat di atas catatan bawah)
         self.frame_bawah = tk.Frame(self.frame_kanan, height=85, bg="white", relief=tk.RIDGE, bd=1)
         self.frame_bawah.pack(side=tk.BOTTOM, fill=tk.X, padx=20, pady=(0, 6))
         self.frame_bawah.pack_propagate(False)
@@ -530,8 +494,6 @@ class AppUI:
         scroll_log.config(command=self.text_command.yview)
         scroll_log.pack(side=tk.RIGHT, fill=tk.Y)
         self.text_command.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-
-        # OUTPUT HASIL (MIDDLE - sisa ruang di tengah)
         frame_hasil_wrap = tk.Frame(self.frame_kanan, bg="white")
         frame_hasil_wrap.pack(fill=tk.BOTH, expand=True, padx=20, pady=(0, 6))
 
@@ -547,8 +509,6 @@ class AppUI:
         scroll_hasil.config(command=self.text_hasil.yview)
         scroll_hasil.pack(side=tk.RIGHT, fill=tk.Y)
         self.text_hasil.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-
-        # Tampilkan menu default: STACK - POSTFIX (MESIN KASIR) seperti modul
         self.pilih_menu(self.menu_aktif)
 
     def _on_mousewheel(self, event):
@@ -557,27 +517,20 @@ class AppUI:
         except Exception:
             pass
 
-    # =====================================================================
-    # LOGIKA NAVIGASI MENU DINAMIS
-    # =====================================================================
-
     def pilih_menu(self, menu_id):
-        """Memilih menu navigasi dan menyesuaikan form parameter di panel kanan."""
+
         if menu_id not in self.menu_config:
             return
 
         self.menu_aktif = menu_id
         config = self.menu_config[menu_id]
 
-        # Update tampilan judul, parameter, tombol aksi, dan hint
         self.lbl_judul.config(text=config['judul'])
         self.lbl_subjudul.config(text=config['subjudul'])
         self.lbl_param.config(text=config['field'])
         self.btn_aksi.config(text=config['btn'])
         self.lbl_hint.config(text=config['hint'])
         self.var_param.set(config['default'])
-
-        # Highlight tombol menu yang sedang aktif
         for mid, btn in self.tombol_menu.items():
             if mid == menu_id:
                 btn.config(relief=tk.SUNKEN, bg="#c8d6e5")
@@ -587,10 +540,7 @@ class AppUI:
         self.entry_param.focus_set()
         self.entry_param.select_range(0, tk.END)
 
-    # =====================================================================
-    # UTILITAS M3
-    # =====================================================================
-
+    # helper m3
     def _pastikan_data_m3(self):
         if self.backend_array.ukuran == 0:
             self.aksi_load()
@@ -649,25 +599,15 @@ class AppUI:
         for i in range(batas):
             teks += self._format_pesanan_ringkas(data[i]) + "\n"
         return teks
-    # =====================================================================
-    # EKSEKUSI OPERASI BACKEND
-    # =====================================================================
 
+    # aksi tombol
     def eksekusi_aksi(self):
-        """Mengeksekusi operasi sesuai menu yang sedang dipilih."""
+
         config = self.menu_config[self.menu_aktif]
         aksi = config['aksi']
-
-        # -------------------------------------------------------------
-        # FITUR DATA
-        # -------------------------------------------------------------
         if aksi == 'DATA_LOAD':
             self.aksi_load()
             return
-
-        # -------------------------------------------------------------
-        # FITUR M1
-        # -------------------------------------------------------------
         elif aksi == 'TAMBAH':
             target_ds = self.backend_array if config['struktur'] == 'ARRAY' else self.backend_ll
             nama = self.var_param.get().strip() or "Pelanggan Baru"
@@ -753,10 +693,6 @@ class AppUI:
                     f"GAGAL MENGHAPUS / INDEKS {indeks} DI LUAR BATAS!\n"
                     f"Rentang indeks yang valid: 0 s.d. {max(0, target_ds.ukuran - 1):,}"
                 )
-
-        # -------------------------------------------------------------
-        # FITUR M2: STACK & QUEUE
-        # -------------------------------------------------------------
         elif aksi == 'M2_STACK_POSTFIX':
             ekspresi = self.var_param.get().strip()
             mulai = time.perf_counter()
@@ -766,20 +702,16 @@ class AppUI:
                 selesai = time.perf_counter()
                 waktu_ms = (selesai - mulai) * 1000
 
-                # Format ringkasan atas persis seperti modul
                 hasil_teks = f"Struk : {ekspresi}\n"
                 hasil_teks += f"Postfix: {' '.join(postfix_list)}\n"
                 hasil_teks += f"TOTAL : Rp {total:,.0f}".replace(",", ".") + "\n\n"
 
-                # Header Tabel
                 hasil_teks += f"{'langkah':<10} {'token':<8} {'tindakan':<38} {'stack':<18} {'output'}\n"
                 hasil_teks += "-" * 105 + "\n"
 
-                # Baris 1.x: Konversi Infix -> Postfix
                 for no, tok, act, st, out in langkah_konv:
                     hasil_teks += f"{no:<10} {tok:<8} {act:<38} {st:<18} {out}\n"
 
-                # Baris 2.x: Evaluasi Postfix
                 for no, tok, act, st in langkah_eval:
                     hasil_teks += f"{no:<10} {tok:<8} {act:<38} {st:<18}\n"
 
@@ -891,10 +823,6 @@ class AppUI:
                 f"Panjang antrean Naif: {self.queue_naif.ukuran:,} | Circular: {self.queue_circular.count:,}\n"
                 f"Status tumpukan: Undo={undo_sz}, Redo={redo_sz}"
             )
-
-        # -------------------------------------------------------------
-        # FITUR M3: SORTING & SEARCHING
-        # -------------------------------------------------------------
         elif aksi == 'M3_INSERTION_SORT':
             if not self._pastikan_data_m3():
                 return
@@ -1013,24 +941,15 @@ class AppUI:
             self.text_hasil.delete(1.0, tk.END)
             self.text_hasil.insert(tk.END, hasil_teks)
             self.lbl_catatan_bawah.config(text="Binary Search hanya sah pada data yang sudah terurut menurut OID. Karena itu UI mencatat biaya Merge Sort awal secara terang-terangan.")
-
-        # Catat ke panel COMMAND dengan format modul: [perintah] -> [modul] [waktu] ms
         pesan_log = f"{config['cmd']:<22} -> {config['modul']:<14} {waktu_ms:.2f} ms\n"
         self.text_command.insert(tk.END, pesan_log)
         self.text_command.see(tk.END)
-
-        # Update indikator status di pojok kiri bawah
         self.btn_status.config(text=f"[{config['modul']}]  {waktu_ms:.2f} ms")
 
-    # =====================================================================
-    # FUNGSI DATA
-    # =====================================================================
-
+    # load csv
     def aksi_load(self):
-        """Memuat dataset CSV ke dalam Array dan Linked List."""
-        mulai = time.perf_counter()
 
-        # Reset struktur data agar tidak menumpuk saat Load ditekan berulang
+        mulai = time.perf_counter()
         self.backend_array.ukuran = 0
         self.backend_array.kapasitas = 4
         self.backend_array.data = [None] * self.backend_array.kapasitas
@@ -1068,7 +987,6 @@ class AppUI:
                 f"Total {jumlah_antre:,} pesanan berstatus ANTRE siap diuji di antrean M2."
             )
 
-            # Format log COMMAND: load -> M1 - larik {waktu} ms
             pesan_log = f"{'load':<22} -> {'M1 - larik':<14} {waktu_ms:.2f} ms\n"
             self.text_command.insert(tk.END, pesan_log)
             self.text_command.see(tk.END)
@@ -1081,10 +999,6 @@ class AppUI:
             pesan_log = f"{'load':<22} -> {'M1 - larik':<14} GAGAL\n"
             self.text_command.insert(tk.END, pesan_log)
             self.text_command.see(tk.END)
-
-
-
-
 
 
 

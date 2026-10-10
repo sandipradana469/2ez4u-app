@@ -1,4 +1,4 @@
-# --- LOGIKA ARRAY DINAMIS ---
+# array dinamis
 class Array:
     def __init__(self, kapasitas_awal=4):
         self.kapasitas = kapasitas_awal
@@ -13,14 +13,12 @@ class Array:
         self.kapasitas = kapasitas_baru
 
     def append(self, v):
-        # Tambah REGULER (di belakang) - Amortized O(1)
         if self.ukuran == self.kapasitas:
             self._resize(2 * self.kapasitas)
         self.data[self.ukuran] = v
         self.ukuran += 1
 
     def insert(self, indeks, v):
-        # Tambah PRIORITAS/VIP - O(n) karena harus geser elemen
         if indeks <= 0:
             indeks = 0
         elif indeks >= self.ukuran:
@@ -48,9 +46,7 @@ class Array:
             self.ukuran -= 1
             return dihapus
         return None
-
-
-# --- LOGIKA LINKED LIST ---
+# linked list
 class Node:
     def __init__(self, data):
         self.data = data
@@ -63,7 +59,6 @@ class LinkList:
         self.ukuran = 0
 
     def append(self, v):
-        # Tambah REGULER (di belakang) - O(1) karena ada tail
         simpul_baru = Node(v)
         if not self.head:
             self.head = self.tail = simpul_baru
@@ -73,8 +68,7 @@ class LinkList:
         self.ukuran += 1
 
     def insert(self, indeks, v):
-        # Tambah PRIORITAS (tengah) atau VIP (depan)
-        if indeks <= 0: # VIP masuk paling depan - O(1)
+        if indeks <= 0:
             simpul_baru = Node(v)
             simpul_baru.next = self.head
             self.head = simpul_baru
@@ -86,8 +80,7 @@ class LinkList:
         if indeks >= self.ukuran:
             self.append(v)
             return
-            
-        # PRIORITAS masuk tengah - O(n) telusur
+
         simpul_baru = Node(v)
         sekarang = self.head
         for _ in range(indeks - 1):
@@ -128,3 +121,6 @@ class LinkList:
             
         self.ukuran -= 1
         return dihapus.data
+
+
+

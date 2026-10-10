@@ -1,10 +1,10 @@
-# M3 laporan: sorting dan searching manual sesuai aturan modul.
 
+# kolom csv
 IDX_OID = 0
 IDX_HARGA = 4
 IDX_SELESAI = 7
 
-
+# ambil nilai pembanding
 def normalisasi_kunci(kunci):
     teks = (kunci or "").strip().lower()
     if teks == "oid":
@@ -14,7 +14,6 @@ def normalisasi_kunci(kunci):
     if teks == "selesai" or teks == "t_selesai" or teks == "t_selesai_detik":
         return "selesai"
     return None
-
 
 def ambil_kunci(pesanan, kunci):
     if pesanan is None:
@@ -29,12 +28,10 @@ def ambil_kunci(pesanan, kunci):
         return _ke_int(pesanan, IDX_SELESAI, 999999999)
     return _ambil_kolom(pesanan, IDX_OID)
 
-
 def _ambil_kolom(pesanan, indeks):
     if indeks < len(pesanan):
         return pesanan[indeks].strip()
     return ""
-
 
 def _ke_int(pesanan, indeks, default):
     teks = _ambil_kolom(pesanan, indeks)
@@ -45,7 +42,6 @@ def _ke_int(pesanan, indeks, default):
     except ValueError:
         return default
 
-
 def bandingkan(a, b, kunci):
     ka = ambil_kunci(a, kunci)
     kb = ambil_kunci(b, kunci)
@@ -54,7 +50,6 @@ def bandingkan(a, b, kunci):
     if ka > kb:
         return 1
     return 0
-
 
 def salin_data(larik, jumlah):
     n = jumlah
@@ -68,7 +63,7 @@ def salin_data(larik, jumlah):
         hasil[i] = larik[i]
     return hasil
 
-
+# sorting
 def insertion_sort(larik, kunci):
     data = salin_data(larik, len(larik))
     perbandingan = 0
@@ -91,14 +86,12 @@ def insertion_sort(larik, kunci):
 
     return data, perbandingan, pemindahan
 
-
 def merge_sort(larik, kunci):
     data = salin_data(larik, len(larik))
     bantu = [None] * len(data)
-    metrik = [0, 0]  # perbandingan, pemindahan
+    metrik = [0, 0]
     _merge_sort_rekursif(data, bantu, 0, len(data), kunci, metrik)
     return data, metrik[0], metrik[1]
-
 
 def _merge_sort_rekursif(data, bantu, kiri, kanan, kunci, metrik):
     if kanan - kiri <= 1:
@@ -108,7 +101,6 @@ def _merge_sort_rekursif(data, bantu, kiri, kanan, kunci, metrik):
     _merge_sort_rekursif(data, bantu, kiri, tengah, kunci, metrik)
     _merge_sort_rekursif(data, bantu, tengah, kanan, kunci, metrik)
     _gabung(data, bantu, kiri, tengah, kanan, kunci, metrik)
-
 
 def _gabung(data, bantu, kiri, tengah, kanan, kunci, metrik):
     i = kiri
@@ -142,7 +134,7 @@ def _gabung(data, bantu, kiri, tengah, kanan, kunci, metrik):
         data[p] = bantu[p]
         metrik[1] += 1
 
-
+# searching
 def linear_search(larik, target_oid):
     target = (target_oid or "").strip()
     perbandingan = 0
@@ -153,7 +145,6 @@ def linear_search(larik, target_oid):
             return i, larik[i], perbandingan
 
     return -1, None, perbandingan
-
 
 def binary_search(larik_terurut_oid, target_oid):
     target = (target_oid or "").strip()
@@ -174,4 +165,7 @@ def binary_search(larik_terurut_oid, target_oid):
             kanan = tengah - 1
 
     return -1, None, perbandingan
+
+
+
 

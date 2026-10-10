@@ -1,7 +1,7 @@
-#M2 antrean
 
+# stack
 class Stack:
-    #Implementasi tumpukan (LIFO) menggunakan array primitif dinamis.
+
     def __init__(self, kapasitas_awal=16):
         self.kapasitas = kapasitas_awal
         self.top = 0
@@ -50,9 +50,9 @@ class Stack:
             self.data[i] = None
         self.top = 0
 
-# BAGIAN A (1): KASIR (INFIX -> POSTFIX -> EVALUASI)
+# postfix
 def tokenisasi(ekspresi):
-    """Memecah string ekspresi menjadi list token (angka, operator, kurung)."""
+
     tokens = []
     i = 0
     n = len(ekspresi)
@@ -84,11 +84,6 @@ def presedensi(op):
     return 0
 
 def ke_postfix(ekspresi):
-    """
-    Mengubah infix ke postfix memakai Stack operator.
-    Mengembalikan (list_postfix, langkah_tabel).
-    Setiap baris langkah: (nomor, token, tindakan, stack, keluaran)
-    """
     tokens = tokenisasi(ekspresi)
     stack_op = Stack()
     keluaran = []
@@ -148,11 +143,6 @@ def ke_postfix(ekspresi):
     return keluaran, langkah
 
 def hitung(postfix):
-    """
-    Mengevaluasi ekspresi postfix memakai Stack nilai.
-    Mengembalikan (total_nilai, langkah_tabel).
-    Setiap baris langkah: (nomor, token, tindakan, stack_str)
-    """
     stack_val = Stack()
     langkah = []
     nomor = 0
@@ -187,9 +177,9 @@ def hitung(postfix):
     total = stack_val.pop()
     return total, langkah
 
-# BAGIAN B: DUA VERSI QUEUE (NAIF VS MELINGKAR)
+# queue naif
 class QueueNaif:
-    """Antrean berbasis array biasa. Dequeue memerlukan penggeseran elemen O(n)."""
+
     def __init__(self, kapasitas_awal=32):
         self.kapasitas = kapasitas_awal
         self.ukuran = 0
@@ -209,10 +199,6 @@ class QueueNaif:
         self.ukuran += 1
 
     def dequeue(self, jumlah=1):
-        """
-        Melayani 'jumlah' pesanan dari depan antrean.
-        Mengembalikan tuple (list_pesanan_keluar, total_elemen_digeser).
-        """
         if self.ukuran == 0:
             return [], 0
 
@@ -220,15 +206,11 @@ class QueueNaif:
         keluar = [None] * k_nyata
         for i in range(k_nyata):
             keluar[i] = self.data[i]
-
-        # Hitung total elemen yang digeser:
-        # Jika k pesanan keluar bertahap, tiap langkah menggeser sisa elemen
         total_digeser = 0
         for langkah in range(k_nyata):
             sisa_elemen = self.ukuran - (langkah + 1)
             total_digeser += sisa_elemen
 
-        # Geser fisik elemen ke depan
         sisa = self.ukuran - k_nyata
         for i in range(sisa):
             self.data[i] = self.data[i + k_nyata]
@@ -254,11 +236,8 @@ class QueueNaif:
             self.data[i] = None
         self.ukuran = 0
 
-
+# circular queue
 class AntreanMelingkar:
-    
-    #Antrean melingkar (Circular Queue) berbasis array dengan penunjuk front, rear, dan count.
-    #Operasi enqueue O(1) dan dequeue O(1) tanpa penggeseran elemen memori.
 
     def __init__(self, kapasitas_awal=32768):
         self.kapasitas = kapasitas_awal
@@ -284,10 +263,6 @@ class AntreanMelingkar:
         self.count += 1
 
     def dequeue(self, jumlah=1):
-        """
-        Melayani 'jumlah' pesanan dari depan antrean secara O(1).
-        Mengembalikan tuple (list_pesanan_keluar, 0) karena 0 elemen digeser.
-        """
         if self.count == 0:
             return [], 0
 
@@ -302,23 +277,16 @@ class AntreanMelingkar:
         return keluar, 0
 
     def kembalikan_ke_depan(self, daftar_pesanan):
-        """
-        Mengembalikan seluruh pesanan ke DEPAN antrean (dipakai untuk UNDO aksi dequeue).
-        """
         k = len(daftar_pesanan)
         while self.count + k > self.kapasitas:
             self._resize(2 * self.kapasitas)
 
-        # Kembalikan dengan urutan terbalik agar elemen pertama kembali menjadi front
         for i in range(k - 1, -1, -1):
             self.front = (self.front - 1 + self.kapasitas) % self.kapasitas
             self.data[self.front] = daftar_pesanan[i]
             self.count += 1
 
     def keluarkan_dari_belakang(self):
-        """
-        Mencabut 1 pesanan dari belakang antrean (dipakai untuk UNDO aksi enqueue).
-        """
         if self.count == 0:
             return None
         self.rear = (self.rear - 1 + self.kapasitas) % self.kapasitas
@@ -339,29 +307,17 @@ class AntreanMelingkar:
         self.count = 0
         self.data = [None] * self.kapasitas
 
-# BAGIAN A (2): STACK UNDO & REDO
+# undo redo
 class ManajerUndoRedo:
-    """
-    Mengelola tumpukan undo dan redo.
-    Aturan: Aksi baru apa pun mengosongkan tumpukan redo.
-    """
     def __init__(self):
         self.stack_undo = Stack()
         self.stack_redo = Stack()
 
     def catat_aksi(self, jenis, data):
-        """
-        Mencatat aksi baru ke stack undo dan MENGOSONGKAN stack redo.
-        jenis: 'ENQUEUE' atau 'DEQUEUE'
-        """
         self.stack_undo.push((jenis, data))
         self.stack_redo.clear()
 
     def undo(self, queue_circular, queue_naif=None):
-        """
-        Membatalkan aksi terakhir dari stack undo.
-        Mengembalikan pesan status.
-        """
         if self.stack_undo.is_empty():
             return "Tumpukan undo kosong, tidak ada aksi yang bisa dibatalkan."
 
@@ -369,7 +325,7 @@ class ManajerUndoRedo:
         jenis, data = aksi
 
         if jenis == 'ENQUEUE':
-            # Kebalikan enqueue: keluarkan lagi pesanan dari belakang antrean
+
             dihapus = queue_circular.keluarkan_dari_belakang()
             if queue_naif and queue_naif.ukuran > 0:
                 queue_naif.ukuran -= 1
@@ -377,7 +333,7 @@ class ManajerUndoRedo:
             pesan = f"{dihapus[0] if dihapus else 'Pesanan'} dikeluarkan lagi dari belakang antrean circular"
 
         elif jenis == 'DEQUEUE':
-            # Kebalikan dequeue: kembalikan seluruh pesanan ke DEPAN kedua antrean
+
             queue_circular.kembalikan_ke_depan(data)
             if queue_naif:
                 queue_naif.kembalikan_ke_depan(data)
@@ -386,15 +342,10 @@ class ManajerUndoRedo:
         else:
             pesan = f"Aksi {jenis} dibatalkan"
 
-        # Simpan aksi yang dibatalkan ke stack redo
         self.stack_redo.push(aksi)
         return pesan
 
     def redo(self, queue_circular, queue_naif=None):
-        """
-        Mengerjakan kembali aksi yang baru saja dibatalkan oleh undo.
-        Mengembalikan pesan status.
-        """
         if self.stack_redo.is_empty():
             return "Tumpukan redo kosong, tidak ada yang diulang."
 
@@ -402,14 +353,14 @@ class ManajerUndoRedo:
         jenis, data = aksi
 
         if jenis == 'ENQUEUE':
-            # Kerjakan lagi enqueue aslinya
+
             queue_circular.enqueue(data)
             if queue_naif:
                 queue_naif.enqueue(data)
             pesan = f"{data[0]} masuk kembali ke belakang antrean circular"
 
         elif jenis == 'DEQUEUE':
-            # Kerjakan lagi dequeue aslinya pada kedua antrean
+
             k = len(data)
             keluar, _ = queue_circular.dequeue(k)
             if queue_naif:
@@ -419,10 +370,13 @@ class ManajerUndoRedo:
         else:
             pesan = f"Aksi {jenis} diulang"
 
-        # Push kembali ke stack undo
         self.stack_undo.push(aksi)
         return pesan
 
     def stats(self):
         return self.stack_undo.size(), self.stack_redo.size()
+
+
+
+
 
